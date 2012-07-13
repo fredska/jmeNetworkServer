@@ -49,7 +49,7 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
     public void simpleInitApp()
     {
         Serializer.registerClass(HelloMessage.class);
-        Serializer.registerClass(FieldGameMessageSerializer.class, new FieldGameMessageSerializer(JavaUtilFieldGameMessage.class));
+        Serializer.registerClass(JavaUtilFieldGameMessage.class, new FieldGameMessageSerializer(JavaUtilFieldGameMessage.class));
         
         try
         {
@@ -124,9 +124,9 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
             return player;
     }
     
-    private BaseFieldGameMessage createMessage(Node player)
+    private JavaUtilFieldGameMessage createMessage(Node player)
     {
-        BaseFieldGameMessage message = new JavaUtilFieldGameMessage();
+        JavaUtilFieldGameMessage message = new JavaUtilFieldGameMessage();
         message.setType(0x01);
         message.setOrd(Byte.MAX_VALUE);
         message.setInt(12, (Integer)player.getUserData("PlayerNum"));
@@ -140,9 +140,12 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
         //throw new UnsupportedOperationException("Not supported yet.");
        if(m instanceof IFieldGameMessage){
             final IFieldGameMessage fgm = (IFieldGameMessage)m;
+            final int clientId = source.getId();
+            final Message msg = m;
             this.enqueue(new Callable<Void>(){
-
                 public Void call() throws Exception {
+                    System.out.println("Client_" + clientId + " sent a message!");
+                    System.out.println("Message Type: " + msg.getClass());
                     messagequeue.add(fgm);
                     
                     return null;

@@ -17,7 +17,7 @@ import com.jme3.network.serializing.Serializable;
  * 
  * @author kg
  */
-@Serializable(id=2, serializer=FieldGameMessageSerializer.class)
+@Serializable(id=23, serializer=FieldGameMessageSerializer.class)
 public abstract class BaseFieldGameMessage 
 extends AbstractMessage 
 implements IFieldGameMessage {

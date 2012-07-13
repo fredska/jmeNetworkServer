@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author kg
  */
-@Serializable(id=1, serializer=FieldGameMessageSerializer.class)
+@Serializable(id=12, serializer=FieldGameMessageSerializer.class)
 public class JavaUtilFieldGameMessage 
 extends BaseFieldGameMessage {
 

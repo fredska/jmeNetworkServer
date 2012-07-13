@@ -18,7 +18,7 @@ extends Serializer {
 
     static {
         Serializer.registerClass(
-			IFieldGameMessage.class, 
+			JavaUtilFieldGameMessage.class, 
 			new FieldGameMessageSerializer(JavaUtilFieldGameMessage.class)
 		) ;
     }

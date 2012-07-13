@@ -72,7 +72,7 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
        
         if(start)
         {
-            if(globalTimer > 0.0333f)
+            if(globalTimer > 0.15f)
             {
                     //Process the Message Queue
             IFieldGameMessage fgm;
@@ -144,8 +144,8 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
             final Message msg = m;
             this.enqueue(new Callable<Void>(){
                 public Void call() throws Exception {
-                    System.out.println("Client_" + clientId + " sent a message!");
-                    System.out.println("Message Type: " + msg.getClass());
+                    //System.out.println("Client_" + clientId + " sent a message!");
+                    //System.out.println("Message Type: " + msg.getClass());
                     messagequeue.add(fgm);
                     
                     return null;

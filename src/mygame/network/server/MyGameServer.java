@@ -161,6 +161,14 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
     }
 
     public void connectionRemoved(Server server, HostedConnection conn) {
+        
+        //Remove player node;
+        Node player = (Node)allPlayers.getChild("Player_" + conn.getId());
+        if(player != null)
+            player.removeFromParent();
+        else
+            System.out.println("Why are ye null??");
+        
         //If no connections remain, turn the server "off"
         if(server.getConnections().size() == 0)
             start = false;

@@ -49,14 +49,15 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
     public void simpleInitApp()
     {
         Serializer.registerClass(HelloMessage.class);
-        Serializer.registerClass(JavaUtilFieldGameMessage.class, new FieldGameMessageSerializer(JavaUtilFieldGameMessage.class));
+		FieldGameMessageSerializer.setMessageImplType(JavaUtilFieldGameMessage.class) ;
+        Serializer.registerClass(IFieldGameMessage.class, new FieldGameMessageSerializer());
         
         try
         {
             myServer = Network.createServer(6013);
             //myServer.addMessageListener(new ServerListener(), HelloMessage.class);
             //myServer.addMessageListener(new ServerFieldMessageListener(), JavaUtilFieldGameMessage.class);
-            myServer.addMessageListener(this, JavaUtilFieldGameMessage.class);
+            myServer.addMessageListener(this, IFieldGameMessage.class);
             myServer.addConnectionListener(this);
             myServer.start();
             System.out.println("Server has started");
@@ -124,7 +125,7 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
             return player;
     }
     
-    private JavaUtilFieldGameMessage createMessage(Node player)
+    private IFieldGameMessage createMessage(Node player)
     {
         JavaUtilFieldGameMessage message = new JavaUtilFieldGameMessage();
         message.setType(0x01);

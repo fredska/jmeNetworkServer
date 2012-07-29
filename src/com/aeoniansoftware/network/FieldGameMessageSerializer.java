@@ -15,20 +15,22 @@ import java.util.Collection;
  */
 public class FieldGameMessageSerializer<X extends IFieldGameMessage>
 extends Serializer {
-
-    static {
-        Serializer.registerClass(
-			JavaUtilFieldGameMessage.class, 
-			new FieldGameMessageSerializer(JavaUtilFieldGameMessage.class)
-		) ;
-    }
     
+	private static Class<? extends IFieldGameMessage> GlobalMessageImplClass ;
     private final Class<X> messageImplClass ;
 
+	public static void setMessageImplType(Class<? extends IFieldGameMessage> type) {
+		GlobalMessageImplClass = type ;
+	}
+	
+	public FieldGameMessageSerializer() {
+		this.messageImplClass = (Class<X>) GlobalMessageImplClass ;
+	}
+	
     public FieldGameMessageSerializer(Class<X> type) {
         this.messageImplClass = type ;
     }
-    
+
     /**
      * this method exists for the sole purpose of shutting the compiler up,
      *  due to jmonkeys weird as fuck type-sigs 

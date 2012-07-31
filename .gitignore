@@ -5,3 +5,4 @@
 *.war
 *.ear
 private.properties
+!./assets/Lib/*.jar

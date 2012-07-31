@@ -9,7 +9,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.network.AbstractMessage;
 import com.aeoniansoftware.network.IFieldGameMessageContext.FieldType ;
-//import com.jme3.network.serializing.Serializable;
+import com.jme3.network.serializing.Serializable;
 
 /**
  * basic implementation of field game message;
@@ -17,7 +17,7 @@ import com.aeoniansoftware.network.IFieldGameMessageContext.FieldType ;
  * 
  * @author kg
  */
-//@Serializable(id=23, serializer=FieldGameMessageSerializer.class)
+@Serializable(id=23, serializer=FieldGameMessageSerializer.class)
 public abstract class BaseFieldGameMessage 
 extends AbstractMessage 
 implements IFieldGameMessage {

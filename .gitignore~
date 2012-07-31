@@ -1,6 +1,9 @@
-*.class
+#*.class
 
 # Package Files #
 *.jar
 *.war
 *.ear
+private.properties
+!./assets/Lib/*.jar
+

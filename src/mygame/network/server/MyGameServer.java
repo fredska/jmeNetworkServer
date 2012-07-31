@@ -48,13 +48,16 @@ public class MyGameServer extends SimpleApplication implements ConnectionListene
     @Override
     public void simpleInitApp()
     {
+//        Serializer.registerClass(HelloMessage.class);
+//        Serializer.registerClass(JavaUtilFieldGameMessage.class, new FieldGameMessageSerializer(JavaUtilFieldGameMessage.class));
+        //Register all Serialized Classes
         Serializer.registerClass(HelloMessage.class);
-		FieldGameMessageSerializer.setMessageImplType(JavaUtilFieldGameMessage.class) ;
+        FieldGameMessageSerializer.setMessageImplType(JavaUtilFieldGameMessage.class) ;
         Serializer.registerClass(IFieldGameMessage.class, new FieldGameMessageSerializer());
         
         try
         {
-            myServer = Network.createServer(6013);
+            myServer = Network.createServer(6013, 6014);
             //myServer.addMessageListener(new ServerListener(), HelloMessage.class);
             //myServer.addMessageListener(new ServerFieldMessageListener(), JavaUtilFieldGameMessage.class);
             myServer.addMessageListener(this, IFieldGameMessage.class);

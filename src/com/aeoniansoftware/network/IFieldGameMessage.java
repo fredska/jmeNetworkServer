@@ -9,13 +9,14 @@ import java.util.Comparator;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector2f;
+import com.jme3.network.Message;
 
 /**
  *
  * @author kg
  */
 public interface IFieldGameMessage 
-extends Comparable<IFieldGameMessage> {
+extends Comparable<IFieldGameMessage>, Message {
     
     public static final Comparator<IFieldGameMessage> Compare = 
     new Comparator<IFieldGameMessage>() {

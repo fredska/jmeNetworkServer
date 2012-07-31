@@ -1,0 +1,143 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.aeoniansoftware.network;
+
+import com.jme3.network.AbstractMessage;
+import java.util.Collection;
+import java.util.Comparator;
+import com.jme3.math.Quaternion;
+import om.jme3.math.Vector3f;
+
+/**
+ *
+ * @author kg
+ */
+public interface IFieldGameMessage 
+extends Comparable<IFieldGameMessage> {
+    
+    public static final Comparator<IFieldGameMessage> Compare = 
+    new Comparator<IFieldGameMessage>() {
+        public int compare(
+            IFieldGameMessage a, 
+            IFieldGameMessage b
+        ) {
+            Integer aord = Integer.valueOf( a.getOrd() ) ;
+            Integer bord = Integer.valueOf( b.getOrd() ) ;
+            return aord.compareTo(bord) ;
+        }
+    } ;
+    
+    public abstract class BaseFieldGameMessage
+    extends AbstractMessage
+    implements IFieldGameMessage {
+        private Byte type = (byte) 0x00 ;
+        private Byte ord = Byte.MAX_VALUE ;
+        
+        public BaseFieldGameMessage() {
+
+        }
+        public BaseFieldGameMessage(Byte mtype) {
+            this.setType(mtype);
+        }
+        public Bom.jme3.math.Vector3faseFieldGameMessage(Integer mtype) {
+            this.setType(mtype);
+        }
+        
+        public Byte getType() {
+            return this.type ;
+        }
+        public void setType(Integer mtype) {
+            this.setType(mtype.byteValue());
+        }
+        public void setType(Byte mtype) {
+            this.type = mtype ;
+        }
+
+        public Byte getOrd() {
+            return (this.ord == null)
+                ? Byte.MAX_VALUE
+                : this.ord
+            ;
+        }
+        public void setOrd(Integer o) {
+            this.ord = o.byteValue() ;
+        }
+        public void setOrd(Byte o) {
+            this.ord = o ;
+        }
+        
+        public int compareTo(IFieldGameMessage that) {
+           return Compare.compare(this, that) ;
+        }
+    }
+    
+    /**
+     * default type == 0
+     * @return ubyte : type indication of message
+     */
+    public Byte getType() ;
+    public void setType(Integer mtype) ;
+    public void setType(Byte mtype) ;
+    
+    /**
+     * default ordering is maximum signed byte
+     * @return sbyte : ordering of message compared to others
+     */
+    public Byte getOrd() ;
+    public void setOrd(Integer o) ;
+    public void setOrd(Byte o) ;
+ 
+    /**
+     * 
+     * @param k : unsigned btye
+     * @return string field tied to given ubyte
+     */
+    public String getStringField(int k) ;
+    public void setStringField(int k, String v) ;
+    public int[] getStringFieldKeys() ;
+    
+    /**
+     * 
+     * @param k : unsigned btye
+     * @return signed int field tied to given ubyte
+     */
+    public int getIntField(int k) ;
+    public void setIntField(int k, int v) ;
+    public int[] getIntFieldKeys() ;
+    
+    /**
+     * 
+     * @param k : unsigned btye
+     * @return signed long field tied to given ubyte
+     */
+    public long getLongField(int k) ;
+    public void setLongField(int k, long v) ;
+    public int[] getLongFieldKeys() ;
+    
+    /**
+     * 
+     * @param k : unsigned btye
+     * @return boolean field tied to given ubyte
+     */
+    public boolean getFlagField(int k) ;
+    public void setFlagField(int k, boolean v) ;
+    public int[] getFlagFieldKeys() ;
+    
+    /**
+     * 
+     * @return all children message objects
+     */
+    public Collection<IFieldGameMessage> getChildren() ;
+    public void addChildren(IFieldGameMessage... kids) ;
+
+	public Quaternion getQuaternion(int k) ;
+	public void setQuaternion(int k, Quaternion v) ;
+	public int[] getQuaternionFieldKeys() ;
+
+	public Vector3f getVector3f(int k) ;
+	public void setVector3f(int k, Vector3f v) ;
+	public int[] getVector3fFieldKeys() ;
+    
+}

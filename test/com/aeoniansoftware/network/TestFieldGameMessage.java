@@ -12,6 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.aeoniansoftware.network.IFieldGameMessageContext.FieldType;
+import com.jme3.network.serializing.Serializer;
 
 /**
  *
@@ -21,17 +22,79 @@ public class TestFieldGameMessage {
     
 	public static final double AllowedFloatingPointDelta = 0.0000000001 ;
 	
+	@Test
+	public void testJavaUtilThruJmonkeySerializer1()
+	throws Exception {
+		this.performThruJmonkeySerializer(
+			IFieldGameMessage.class,
+			JavaUtilFieldGameMessage.class
+		);
+	}
+	
+	@Test
+	public void testTroveJmonkeySerializer1()
+	throws Exception {
+		this.performThruJmonkeySerializer(
+			IFieldGameMessage.class,
+			TroveFieldGameMessage.class
+		);
+	}
+	
+	@Test
+	public void testJavaUtilThruJmonkeySerializer2()
+	throws Exception {
+		this.performThruJmonkeySerializer(
+			JavaUtilFieldGameMessage.class,
+			JavaUtilFieldGameMessage.class
+		);
+	}
+	
+	@Test
+	public void testTroveJmonkeySerializer2()
+	throws Exception {
+		this.performThruJmonkeySerializer(
+			TroveFieldGameMessage.class,
+			TroveFieldGameMessage.class
+		);
+	}
+	
+	private void performThruJmonkeySerializer(
+		Class<? extends IFieldGameMessage> matchType,
+		Class<? extends IFieldGameMessage> type
+	) throws Exception {
+		FieldGameMessageSerializer.setMessageImplType(type);
+		Serializer.registerClass(matchType, new FieldGameMessageSerializer()) ;
+		
+		//write in
+		ByteBuffer in_buffer = this.getByteBuffer() ;
+		IFieldGameMessage in = type.newInstance() ;
+		this.populateMessage(0xF7, Byte.MAX_VALUE, in) ;
+		Serializer.writeClassAndObject(in_buffer, in) ;
+		
+		//read out
+		ByteBuffer out_buffer = ByteBuffer.wrap(in_buffer.array()) ;
+		IFieldGameMessage out = (IFieldGameMessage) Serializer.readClassAndObject(out_buffer) ;
+        this.checkMessage(0xF7, Byte.MAX_VALUE, out);
+		
+		//cleanup serializer registration
+		FieldGameMessageSerializer.setMessageImplType(null);
+		//Serializer.registerClass(matchType, true) ;
+		//Serializer.registerClass(type, true) ;
+	}
+	
     @Test
     public void testJavaUtilBasic() 
     throws Exception {
         this.performBasicTest(JavaUtilFieldGameMessage.class );
+        this.performSecondBasicTest(JavaUtilFieldGameMessage.class );
     }
     
-//    @Test
-//    public void testTroveBasic() 
-//    throws Exception {
-//        this.performBasicTest(TroveFieldGameMessage.class);
-//    }
+    @Test
+    public void testTroveBasic() 
+    throws Exception {
+        this.performBasicTest(TroveFieldGameMessage.class);
+        this.performSecondBasicTest(TroveFieldGameMessage.class );
+    }
     
     private void performBasicTest(Class<? extends IFieldGameMessage> type)
     throws Exception {
@@ -49,15 +112,24 @@ public class TestFieldGameMessage {
     }
     
     private void performSecondBasicTest(Class<? extends IFieldGameMessage> type)
-            throws Exception{
+    throws Exception {
+        ByteBuffer in_buffer = this.getByteBuffer();
+        IFieldGameMessage in = type.newInstance();
         
+        this.populateSecondMessage(0xF6, Byte.MAX_VALUE, in) ;
+        FieldGameMessageSerializer.serialize(in, in_buffer);
+        
+        //deserialize message and check it
+        ByteBuffer out_buffer = ByteBuffer.wrap(in_buffer.array()) ;
+        IFieldGameMessage out = FieldGameMessageSerializer.deserialize(type, out_buffer) ;
+        this.checkSecondMessage(0xF6, Byte.MAX_VALUE, out);
     }
     
-//    @Test
-//    public void testTroveSomeChildren()
-//    throws Exception {
-//        this.performChildrenTest(100, TroveFieldGameMessage.class); 
-//    }
+    @Test
+    public void testTroveSomeChildren()
+    throws Exception {
+        this.performChildrenTest(100, TroveFieldGameMessage.class); 
+    }
     
     @Test
     public void testJavaUtilSomeChildren()
@@ -65,11 +137,11 @@ public class TestFieldGameMessage {
         this.performChildrenTest(100, JavaUtilFieldGameMessage.class);
     }
   
-//    @Test
-//    public void testTroveMaxChildren()
-//    throws Exception {
-//       this.performChildrenTest(255, TroveFieldGameMessage.class); 
-//    }
+    @Test
+    public void testTroveMaxChildren()
+    throws Exception {
+       this.performChildrenTest(255, TroveFieldGameMessage.class); 
+    }
     
     @Test
     public void testJavaUtilMaxChildren()
@@ -102,11 +174,11 @@ public class TestFieldGameMessage {
         }
     }
     
-//    @Test
-//    public void testTroveAliasContext()
-//    throws Exception {
-//       this.performAliasContextTest(TroveFieldGameMessage.class); 
-//    }
+    @Test
+    public void testTroveAliasContext()
+    throws Exception {
+       this.performAliasContextTest(TroveFieldGameMessage.class); 
+    }
     
     @Test
     public void testJavaUtilAliasContext()
@@ -241,6 +313,28 @@ public class TestFieldGameMessage {
 		in.setFloat(98, 98.33f);
 		in.setFloat(253, 12345.67f);
 		in.setFloat(255, 76.54321f);
+    }
+    
+    private void populateSecondMessage(int type, byte ord, IFieldGameMessage in)
+    {
+        in.setType(type);
+        in.setOrd(ord);
+        in.setInt(0, 1);
+        in.setVector3f(1, new Vector3f(1.2f, 3.4f, 5.678f));
+        in.setQuaternion(2, new Quaternion(0.1f, 0.23f, 0.456f, 0.789f));
+    }
+    
+    private void checkSecondMessage(int type, byte ord, IFieldGameMessage out)
+    {
+        assertEquals(new Byte((byte)type), out.getType());
+        assertEquals(new Byte(ord), out.getOrd());
+        
+        assertEquals(1, out.getInt(0));
+        assertEquals(new Vector3f(1.2f, 3.4f, 5.678f),
+                out.getVector3f(1));
+        
+        assertEquals(new Quaternion(0.1f, 0.23f, 0.456f, 0.789f),
+                out.getQuaternion(2));
     }
     
     private void checkMessage(int type, byte ord, IFieldGameMessage out)
